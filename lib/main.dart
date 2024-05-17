@@ -66,12 +66,12 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: GridView.count(
-            crossAxisCount: 2,
+        child: GridView.builder(
+            
             padding: const EdgeInsets.all(20),
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 20,
-            children: List.generate(10, (index) {
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+            itemBuilder: (BuildContext context, int index) {  
+
               return GestureDetector(
                 onTap: () {
                   showDialog(
@@ -100,42 +100,46 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                   );
                 },
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    gradient: const LinearGradient(
-                        begin: Alignment.bottomLeft,
-                        end: Alignment(0.2, 0.8),
-                        colors: <Color>[
-                          Color(0xff1f005c),
-                          Color(0xff5b0060),
-                          Color(0xff870160),
-                          Color(0xffac255e),
-                          Color(0xffca485c),
-                          Color(0xffe16b5c),
-                          Color(0xfff39060),
-                          Color(0xffffb56b),
-                        ],
-                        tileMode: TileMode.mirror),
-                    image: DecorationImage(
-                      alignment: Alignment.center,
-                      opacity: 0.5,
-                      image: AssetImage(
-                        'assets/images/member_${index + 1}.png',
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      gradient: const LinearGradient(
+                          begin: Alignment.bottomLeft,
+                          end: Alignment(0.2, 0.8),
+                          colors: <Color>[
+                            Color(0xff1f005c),
+                            Color(0xff5b0060),
+                            Color(0xff870160),
+                            Color(0xffac255e),
+                            Color(0xffca485c),
+                            Color(0xffe16b5c),
+                            Color(0xfff39060),
+                            Color(0xffffb56b),
+                          ],
+                          tileMode: TileMode.mirror),
+                      image: DecorationImage(
+                        alignment: Alignment.center,
+                        opacity: 0.5,
+                        image: AssetImage(
+                          'assets/images/member_${index + 1}.png',
+                        ),
                       ),
                     ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      myList[index],
-                      style: const TextStyle(color: Colors.black, fontSize: 20),
+                    child: Center(
+                      child: Text(
+                        myList[index],
+                        style: const TextStyle(color: Colors.black, fontSize: 20),
+                      ),
                     ),
                   ),
                 ),
               );
-            })),
-      ),
-    );
+            }),
+            ),
+      );}
+  }
     // body: RefreshIndicator(
     //       onRefresh: _onRefresh,
     //       child: Column(
@@ -231,5 +235,3 @@ class _MyHomePageState extends State<MyHomePage> {
     //   ).then((value) => setState(() {
     //         height = 210;
     //       }));
-  }
-}
