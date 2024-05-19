@@ -16,21 +16,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
@@ -64,82 +49,140 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
   @override
   Widget build(BuildContext context) {
+    return GridView.builder(
+  padding: const EdgeInsets.all(20),
+  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 2),
+  itemBuilder: (BuildContext context, int index) {
+    return ImageItem(
+      index: index,
+      title: myList[index],
+     imageAsset: 'assets/images/member_${index + 1}.png',
+    );
+  });
+  }
+}
+
+class ImageItem extends StatefulWidget {
+  final int index;
+  final String title;
+  final String imageAsset;
+
+  const ImageItem({
+    super.key,
+    required this.index,
+    required this.title,
+    required this.imageAsset,
+  });
+
+  @override
+  State<ImageItem> createState() => _ImageItemState();
+}
+
+class _ImageItemState extends State<ImageItem> {
+  @override
+  Widget build(BuildContext context) {
+    return Hero(
+      tag: "image_${widget.index}", // Unique tag for animation
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ImageDetailScreen(
+                index: widget.index,
+                title: widget.title,
+                imageAsset: widget.imageAsset,
+              ),
+            ),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              gradient: const LinearGradient(
+                begin: Alignment.bottomLeft,
+                end: Alignment(0.2, 0.8),
+                colors: <Color>[
+                  Color(0xff1f005c),
+                  Color(0xff5b0060),
+                  Color(0xff870160),
+                  Color(0xffac255e),
+                  Color(0xffca485c),
+                  Color(0xffe16b5c),
+                  Color(0xfff39060),
+                  Color(0xffffb56b),
+                ],
+                tileMode: TileMode.mirror,
+              ),
+              image: DecorationImage(
+                alignment: Alignment.center,
+                opacity: 0.5,
+                image: AssetImage(widget.imageAsset),
+              ),
+            ),
+            child: Center(
+              child: Text(
+                widget.title,
+                style: const TextStyle(color: Colors.black, decoration: TextDecoration.none, fontSize: 20),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ImageDetailScreen extends StatefulWidget {
+  final int index;
+  final String title;
+  final String imageAsset;
+
+  const ImageDetailScreen({
+    super.key,
+    required this.index,
+    required this.title,
+    required this.imageAsset,
+  });
+
+  @override
+  State<ImageDetailScreen> createState() => _ImageDetailScreenState();
+}
+
+class _ImageDetailScreenState extends State<ImageDetailScreen> {
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: GridView.builder(
-            
-            padding: const EdgeInsets.all(20),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-            itemBuilder: (BuildContext context, int index) {  
-
-              return GestureDetector(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return Material(
-                        color: Colors.transparent,
-                        child: GestureDetector(
-                          onTap: () => Navigator.pop(context),
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                image: AssetImage(
-                                    "assets/images/member_${index + 1}.png"),
-                              )),
-                              child: Padding(
-                                padding: const EdgeInsets.all(90.0),
-                                child: Text(myList[index], style: const TextStyle(fontSize: 50, color: Colors.amber)),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      gradient: const LinearGradient(
-                          begin: Alignment.bottomLeft,
-                          end: Alignment(0.2, 0.8),
-                          colors: <Color>[
-                            Color(0xff1f005c),
-                            Color(0xff5b0060),
-                            Color(0xff870160),
-                            Color(0xffac255e),
-                            Color(0xffca485c),
-                            Color(0xffe16b5c),
-                            Color(0xfff39060),
-                            Color(0xffffb56b),
-                          ],
-                          tileMode: TileMode.mirror),
-                      image: DecorationImage(
-                        alignment: Alignment.center,
-                        opacity: 0.5,
-                        image: AssetImage(
-                          'assets/images/member_${index + 1}.png',
-                        ),
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        myList[index],
-                        style: const TextStyle(color: Colors.black, fontSize: 20),
-                      ),
-                    ),
-                  ),
+        child: Stack(
+          children: [
+            Hero(
+              tag: "image_${widget.index}", // Same tag for animation
+              child: Center(
+                child: Image.asset(
+                  widget.imageAsset,
+                  fit: BoxFit.cover,
                 ),
-              );
-            }),
+              ),
             ),
-      );}
+            Positioned(
+              top: 20,
+              left: 20,
+              child: IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.arrow_back),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
+}
+
     // body: RefreshIndicator(
     //       onRefresh: _onRefresh,
     //       child: Column(
